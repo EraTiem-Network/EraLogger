@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="CloudSave" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
+    <serverData>
+      <paths name="CloudSave">
+        <serverdata>
+          <mappings>
+            <mapping deploy="\" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="\src\test" local="$PROJECT_DIR$/src/test" web="/src/test" />
+            <mapping deploy="\src\main" local="$PROJECT_DIR$/src/main" web="/src/main" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath path="\.gradle" />
+            <excludedPath path="build" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

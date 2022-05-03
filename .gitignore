@@ -1,0 +1,23 @@
+### Gradle & Generated Files ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+### IntelliJ IDEA ###
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+.idea/git_toolbox_prj.xml
+.idea/workspace.xml
+*.iws
+*.iml
+*.ipr
+out/
+
+### Mac OS ###
+.DS_Store
+
+### Test Files ###
+**/logs/
+*.log
