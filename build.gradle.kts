@@ -18,7 +18,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("mavenJava") {
             groupId = project.group.toString()
             version = project.version.toString()
             artifactId = project.name
@@ -35,6 +35,11 @@ publishing {
             }
         }
     }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 tasks.test {
