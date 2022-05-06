@@ -6,14 +6,8 @@
       <paths name="CloudSave">
         <serverdata>
           <mappings>
-            <mapping deploy="\" local="$PROJECT_DIR$" web="/" />
-            <mapping deploy="\src\test" local="$PROJECT_DIR$/src/test" web="/src/test" />
-            <mapping deploy="\src\main" local="$PROJECT_DIR$/src/main" web="/src/main" />
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath path="\.gradle" />
-            <excludedPath path="build" />
-          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>
