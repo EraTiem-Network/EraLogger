@@ -28,7 +28,9 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://artifactory.hingel.tech/artifactory/eratiem")
+            url = uri("https://artifactory.hingel.tech/artifactory/eratiem"
+                        + (if (project.version.toString().contains("SNAPSHOT"))
+                            "-snapshot" else ""))
             credentials {
                 username = System.getenv("MAVEN_USR") ?: "admin"
                 password = System.getenv("MAVEN_PSW") ?: ""
