@@ -30,8 +30,8 @@ publishing {
         maven {
             url = uri("https://artifactory.hingel.tech/artifactory/eratiem")
             credentials {
-                username = System.getenv("MAVEN_USER") ?: "admin"
-                password = System.getenv("MAVEN_PASS") ?: ""
+                username = System.getenv("MAVEN_USR") ?: "admin"
+                password = System.getenv("MAVEN_PSW") ?: ""
             }
         }
     }
