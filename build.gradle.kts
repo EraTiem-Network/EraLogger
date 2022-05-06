@@ -8,7 +8,9 @@ plugins {
 group = "net.eratiem.log"
 version = "1.1-SNAPSHOT"
 repositories {
-    mavenCentral()
+    maven {
+        url = uri("https://artifactory.hingel.tech/artifactory/public")
+    }
 }
 
 dependencies {
