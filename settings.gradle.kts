@@ -1,1 +1,1 @@
-rootProject.name = "EraLogger"
+rootProject.name = "eralogger"
