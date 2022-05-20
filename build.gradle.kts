@@ -9,7 +9,7 @@ group = "net.eratiem.log"
 version = "1.1-SNAPSHOT"
 repositories {
     maven {
-        url = uri("https://artifactory.hingel.tech/artifactory/public")
+        url = uri("https://artifactory.bit-build.de/artifactory/public")
     }
 }
 
@@ -29,7 +29,7 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://artifactory.hingel.tech/artifactory/eratiem"
+            url = uri("https://artifactory.bit.build.de/artifactory/eratiem"
                         + (if (project.version.toString().contains("SNAPSHOT"))
                             "-snapshots" else ""))
             credentials {
