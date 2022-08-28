@@ -18,9 +18,9 @@ import javax.inject.Inject
     dependencies = [Dependency(id = "kotlinprovider")]
 )
 class EraLoggerPlugin @Inject constructor(
-    private val name: String,
     logger: Logger
 ) {
+    private val name = "EraLogger"
     private var logger: EraLogger = EraLogger.getInstance(name, logger)
 
     @Subscribe
