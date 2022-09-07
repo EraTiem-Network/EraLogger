@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.Kapt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 import java.util.stream.Collectors
@@ -20,11 +19,11 @@ version = "1.1.0"
 
 repositories {
     maven {
-        url = uri("https://artifactory.bit-build.de/artifactory/all")
+        url = uri("https://artifactory.bit-build.de/artifactory/public")
 
+        // Only needed for local repos that need authentication (for example snapshot-repos)
         bitBuildCredentials(this)
     }
-    mavenCentral()
 }
 
 dependencies {
@@ -34,8 +33,7 @@ dependencies {
     val bungeeApiDependency: String? by project
     val velocityApiDependency: String? by project
 
-
-    if (kotlinVersion.isNotBlank()) compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
+    if (kotlinVersion.isNotBlank()) compileOnly("org.jetbrains.kotlin", "kotlin-stdlib", kotlinVersion)
     if (!spigotApiDependency.isNullOrBlank()) compileOnly("org.spigotmc", "spigot-api", spigotApiDependency)
     if (!paperApiDependency.isNullOrBlank()) compileOnly("io.papermc.paper", "paper-api", paperApiDependency)
     if (!bungeeApiDependency.isNullOrBlank()) compileOnly("net.md-5", "bungeecord-api", bungeeApiDependency)
@@ -47,17 +45,19 @@ dependencies {
 
 val jarTasks: MutableSet<TaskProvider<ShadowJar>> = mutableSetOf()
 
-
 tasks {
 
-    // Write Properties into plugin.yml
+    /**
+     * Copy Task to fill plugin.yml and bungee.yml
+     */
     withType<Copy> {
         outputs.upToDateWhen { false }
+
+        val mainClass = "${project.group}.${project.name.toLowerCase()}.${project.properties["mainClass"]}"
         val pluginDescription: String by project
         val pluginDependencies = getAsYamlList(project.properties["pluginDependencies"])
         val pluginSoftDependencies = getAsYamlList(project.properties["pluginSoftdependencies"])
         val authors: String = getAsYamlList(project.properties["authors"])
-        val mainClass = "${project.group}.${project.name.toLowerCase()}.${project.properties["mainClass"]}"
 
         val props: LinkedHashMap<String, String> = linkedMapOf(
             "plugin_name" to project.name,
@@ -69,7 +69,7 @@ tasks {
             "plugin_authors" to authors
         )
 
-        filesMatching(setOf("plugin.yml", "bungee.yml", "$mainClass.kt")) {
+        filesMatching(setOf("plugin.yml", "bungee.yml")) {
             val api = if (this.sourceName.contains("plugin")) "pluginApiVersion" else "bungeeApiVersion"
             props["plugin_api_version"] = (project.properties[api] as String?) ?: ""
 
@@ -77,18 +77,24 @@ tasks {
         }
     }
 
+    // Disable standart jar task
     jar {
         enabled = false
     }
 
     project.configurations.implementation.get().isCanBeResolved = true
 
+    // Register ShadowJar-Tasks with excludes
     getJarTaskExcludes().forEach { (name, excludes) -> registerShadowJarTask(name, excludes) }
 
+    // Add ShadowJar Tasks as dependency to build
     build {
         jarTasks.forEach(this::dependsOn)
     }
 
+    /**
+     * Create task to copy plugin to paper server
+     */
     create("copyPluginToServer") {
         dependsOn(build)
 
@@ -116,6 +122,9 @@ tasks {
         }
     }
 
+    /**
+     * Create task to run paper server
+     */
     create<Copy>("generateIntelliJRunConfig") {
         group = "plugin"
         enabled = false
@@ -164,6 +173,9 @@ tasks {
     }
 }
 
+/**
+ * Get Jar-Task excludes to generate clean jars
+ */
 fun getJarTaskExcludes(): Map<String, Set<String>> {
     val workingPackage = "${project.group.toString().replace('.', '/')}/${
         project.name.toLowerCaseAsciiOnly().replace("""[^\w\d]""".toRegex(), "")
@@ -238,9 +250,17 @@ publishing {
 
             bitBuildCredentials(this)
         }
+        maven {
+            url = uri("https://maven.pkg.github.com/EraTiem-Network/${project.name}")
+
+            githubPackageCredentials(this)
+        }
     }
 }
 
+/**
+ * Register ShadowJar-Task with excludes and archive name
+ */
 fun registerShadowJarTask(classifier: String, excludes: Set<String>) {
     jarTasks.add(tasks.register<ShadowJar>("${classifier}Jar") {
         group = "plugin"
@@ -258,9 +278,13 @@ fun registerShadowJarTask(classifier: String, excludes: Set<String>) {
 }
 
 
+/**
+ * parse comma seperated lists to
+ */
 fun getAsYamlList(commaSeparatedList: Any?): String {
     if (commaSeparatedList is String && commaSeparatedList.isNotBlank()) {
         return commaSeparatedList
+            .replace(" ", "")
             .split(",")
             .stream()
             .map { "\n  - $it" }
@@ -269,9 +293,22 @@ fun getAsYamlList(commaSeparatedList: Any?): String {
     return ""
 }
 
+/**
+ * Get credentials for Bit-Build's Artifactory (https://artifactory.bit-build.de)
+ */
 fun bitBuildCredentials(maven: MavenArtifactRepository) {
     maven.credentials {
         username = System.getenv("ARTIFACTORY_USER")
         password = System.getenv("ARTIFACTORY_PASS")
+    }
+}
+
+/**
+ * Get credentials for Github-Packages
+ */
+fun githubPackageCredentials(maven: MavenArtifactRepository) {
+    maven.credentials {
+        username = System.getenv("GITHUB_USER")
+        password = System.getenv("GITHUB_TOKEN")
     }
 }
