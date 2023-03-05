@@ -53,7 +53,7 @@ tasks {
     withType<Copy> {
         outputs.upToDateWhen { false }
 
-        val mainClass = "${project.group}.${project.name.toLowerCase()}.${project.properties["mainClass"]}"
+        val mainClass = "${project.group}.${project.name.lowercase()}.${project.properties["mainClass"]}"
         val pluginDescription: String by project
         val pluginDependencies = getAsYamlList(project.properties["pluginDependencies"])
         val pluginSoftDependencies = getAsYamlList(project.properties["pluginSoftdependencies"])
@@ -108,7 +108,7 @@ tasks {
         if (serverPath.isNotBlank() && File(serverPath).exists()) {
             val libsDir = File("${project.buildDir.absolutePath}${File.separator}libs")
             val destinationFile =
-                File("$serverPath${File.separator}plugins${File.separator}${rootProject.name.toLowerCase()}.jar")
+                File("$serverPath${File.separator}plugins${File.separator}${rootProject.name.lowercase()}.jar")
             val jarFiles: List<File>? = libsDir.listFiles()?.filter { it.extension == "jar" }
 
             if (jarFiles?.size == 1) {
@@ -234,7 +234,7 @@ publishing {
     publications {
         create<MavenPublication>("maven-java") {
             groupId = project.group.toString()
-            artifactId = project.name.toLowerCase()
+            artifactId = project.name.lowercase()
             version = project.version.toString()
 
             jarTasks.forEach(this::artifact)
