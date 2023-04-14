@@ -4,6 +4,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+/spigot/run
+/paper/run
+/bungeecord/run
+/waterfall/run
+/velocity/run
 
 ### Files with secrets and private paths ###
 .idea/runConfigurations
