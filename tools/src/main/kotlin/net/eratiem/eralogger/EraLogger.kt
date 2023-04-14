@@ -1,13 +1,14 @@
-package net.eratiem.eralogger.tools
+package net.eratiem.eralogger
 
 import org.slf4j.Logger
+import java.util.logging.Logger as JLogger
 
 interface EraLogger {
     companion object {
         private val instances: LinkedHashMap<String, EraLogger> = linkedMapOf()
 
-        fun getInstance(plugin: String, logger: Logger): EraLogger =
-            instances.getOrPut(plugin) { EraLoggerImpl(logger) }
+        fun getInstance(plugin: String, logger: JLogger): EraLogger =
+            instances.getOrPut(plugin) { EraLoggerImpl(logger as Logger) }
 
         fun destroyInstance(plugin: String): Boolean =
             instances.remove(plugin) == null

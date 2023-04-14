@@ -1,14 +1,12 @@
-package net.eratiem.eralogger.paper
+package net.eratiem.eralogger
 
-import net.eratiem.eralogger.tools.EraLogger
 import org.bukkit.plugin.java.JavaPlugin
-import org.slf4j.Logger
 
 class EraLoggerPlugin : JavaPlugin() {
     private lateinit var logger: EraLogger
 
     override fun onEnable() {
-        logger = EraLogger.getInstance(name, getLogger() as Logger)
+        logger = EraLogger.getInstance(name, getLogger())
         logger.info("EraLogger can now be used!")
     }
 
