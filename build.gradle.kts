@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.eratiem"
-version = "1.1.0"
+version = "1.0.0.alpha1"
 
 subprojects {
   this.group = rootProject.group
@@ -85,6 +85,7 @@ subprojects {
           val api = when (project.name) {
             "spigot" -> rootProject.libs.versions.plugin.spigot
             "paper" -> rootProject.libs.versions.plugin.paper
+            "folia" -> rootProject.libs.versions.plugin.folia
             "bungeecord" -> rootProject.libs.versions.plugin.bungeecord
             else -> rootProject.libs.versions.plugin.waterfall
           }
