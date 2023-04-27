@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.toUpperCaseAsciiOnly
 import java.util.stream.Collectors
 
 plugins {
@@ -8,7 +7,7 @@ plugins {
 }
 
 group = "net.eratiem"
-version = "1.0.0.alpha1"
+version = "1.0.0.alpha2"
 
 subprojects {
   this.group = rootProject.group
@@ -28,10 +27,12 @@ subprojects {
 
   dependencies {
     val tools: Project? = findProject(":tools")
-    if (tools != null && tools != project) implementation(project(":tools"))
+    if (tools != null && tools != project) implementation(project(path = ":tools", configuration = "shadow"))
 
     compileOnly(rootProject.libs.kotlin.gradleplugin)
     compileOnly(rootProject.libs.kotlin.stdlib)
+
+    compileOnly(rootProject.libs.minecraft.plugin.eralogger)
   }
 
   configurations {
@@ -52,7 +53,9 @@ subprojects {
       )
 
       archiveBaseName.set(rootProject.name)
-      archiveClassifier.set(project.name)
+      archiveClassifier.set(null as String?)
+      if (project.name != "tools")
+        archiveAppendix.set(project.name)
 
     }
     if (project.name == "tools")
@@ -118,17 +121,15 @@ subprojects {
   }
 }
 
-fun getAsYamlList(commaSeparatedList: Any?): String {
+fun getAsYamlList(commaSeparatedList: Any?): String =
   if (commaSeparatedList is String && commaSeparatedList.isNotBlank()) {
-    return commaSeparatedList
+    commaSeparatedList
       .replace(" ", "")
       .split(",")
       .stream()
       .map { "\n  - $it" }
       .collect(Collectors.joining())
-  }
-  return ""
-}
+  } else ""
 
 repositories {
   bitBuildArtifactory()
@@ -151,9 +152,11 @@ fun RepositoryHandler.bitBuildArtifactory(
   val url: String
   val name: String
   if (publish) {
-    val isSnapshot = project.version.toString().toUpperCaseAsciiOnly().contains("SNAPSHOT")
-    url = "https://artifactory.bit-build.de/artifactory/eratiem${if (isSnapshot) "-snapshots" else ""}"
-    name = "BitBuildArtifactoryEraTiem${if (isSnapshot) "Snapshots" else ""}"
+    val nonReleaseStrings = listOf("snapshot", "alpha", "beta", "rc")
+    val isNonRelease =
+      nonReleaseStrings.any { project.version.toString().contains(it, true) }
+    url = "https://artifactory.bit-build.de/artifactory/eratiem${if (isNonRelease) "-snapshots" else ""}"
+    name = "BitBuildArtifactoryEraTiem${if (isNonRelease) "Snapshots" else ""}"
 
   } else {
     url = "https://artifactory.bit-build.de/artifactory/public"
