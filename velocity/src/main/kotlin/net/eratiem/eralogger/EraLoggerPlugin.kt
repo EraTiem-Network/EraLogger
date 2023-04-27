@@ -11,7 +11,7 @@ import javax.inject.Inject
 @Plugin(
     id = "eralogger",
     name = "EraLogger",
-    version = "1.1.0",
+    version = "1.0.0.alpha2",
     description = "Logger for EraTeam-Networks Plugins",
     authors = ["Motzkiste"],
     dependencies = [Dependency(id = "kotlinprovider")]

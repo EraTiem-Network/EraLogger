@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "net.eratiem"
-version = "1.0.0.alpha1"
+version = "1.0.0.alpha2"
 
 subprojects {
   this.group = rootProject.group
